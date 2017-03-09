@@ -1,0 +1,28 @@
+sudo: true
+language: node_js
+node_js: "6"
+os: osx  
+osx_image: xcode8.2
+
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+
+install:
+#    - npm install electron-prebuilt --save-dev
+#    - npm install electron-builder electron-updater webpack
+    - npm install
+    - ./node_modules/.bin/webpack -p
+    - npm run build
+    
+script:
+    - ./node_modules/.bin/build --config ./electron-builder.yml --mac
+
+deploy:
+  provider: releases
+  api_key:
+    secure: ba9bdd66240d2c5eb38b597ce906a53cc07d0cd1
+  file: ./dist/mac/testApp-1.0.0.dmg
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: JiangWeiGitHub/wisnucAssistant
