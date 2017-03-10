@@ -87,11 +87,11 @@ mdns().on('stationUpdate', device => {
 // read config file
 try {
   let raw = fs.readFileSync(path.join(tmpPath, 'server'))
-  let config = JSON.parse(raw) 
+  let config = JSON.parse(raw)
   store.dispatch({
     type: 'CONFIG_INIT',
     data: config
-  }) 
+  })
 }
 catch (e) { // e.code === 'ENOENT' && e.syscall === 'read'
   console.log(e)
@@ -109,9 +109,7 @@ app.on('ready', function() {
     console.log('download path is : ' + data)
     store.dispatch({type:'CONFIG_SET_DOWNLOAD_PATH',data})
   }
-  
-  
-  
+ 
   if (mocha) initTestWindow()
 
   // setTimeout(() => {
@@ -141,3 +139,13 @@ app.on('ready', function() {
 })
 
 app.on('window-all-closed', () => app.quit())
+
+autoUpdater.on('update-downloaded', (ev, info) => {
+  setTimeout(function() {
+    autoUpdater.quitAndInstall()
+  }, 5000)
+})
+
+app.on('ready', function()  {
+  autoUpdater.checkForUpdates()
+})
